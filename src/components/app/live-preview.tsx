@@ -7,7 +7,7 @@ import { Skeleton } from "../ui/skeleton";
 
 type Viewport = "desktop" | "tablet" | "mobile";
 
-export function LivePreview({ code, isLoading }: { code: string; isLoading: boolean }) {
+export function LivePreview({ code }: { code: string }) {
   const [viewport, setViewport] = useState<Viewport>("desktop");
   const [htmlContent, setHtmlContent] = useState<string | null>(null);
 
@@ -32,19 +32,6 @@ export function LivePreview({ code, isLoading }: { code: string; isLoading: bool
   };
   
   const wrapperClass = "h-full flex flex-col bg-slate-900/40 backdrop-blur-lg border border-primary/10 rounded-2xl p-4";
-
-  if (isLoading) {
-    return (
-      <div className={wrapperClass}>
-        <div className="flex justify-center gap-2 mb-4">
-          <Skeleton className="h-10 w-10 bg-primary/10" />
-          <Skeleton className="h-10 w-10 bg-primary/10" />
-          <Skeleton className="h-10 w-10 bg-primary/10" />
-        </div>
-        <Skeleton className="flex-grow w-full bg-primary/10" />
-      </div>
-    );
-  }
 
   return (
     <div className={wrapperClass}>

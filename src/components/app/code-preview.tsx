@@ -29,14 +29,31 @@ function parseCode(code: string): File[] {
   return files;
 }
 
-export function CodePreview({ code, isLoading }: { code: string; isLoading: boolean }) {
+export function CodePreview({ 
+  code, 
+  isLoading,
+  onFileSelect 
+}: { 
+  code: string; 
+  isLoading: boolean;
+  onFileSelect: (file: File | null) => void;
+}) {
   const [files, setFiles] = useState<File[]>([]);
-
+  
   useEffect(() => {
-    if (code) {
-      setFiles(parseCode(code));
+    const parsedFiles = parseCode(code);
+    setFiles(parsedFiles);
+    if (parsedFiles.length > 0) {
+      onFileSelect(parsedFiles[0]);
+    } else {
+      onFileSelect(null);
     }
-  }, [code]);
+  }, [code, onFileSelect]);
+
+  const handleTabChange = (value: string) => {
+    const file = files.find(f => f.name === value);
+    onFileSelect(file || null);
+  };
 
   const wrapperClass = "h-full bg-slate-900/40 backdrop-blur-lg border border-primary/10 rounded-2xl p-4 flex flex-col";
 
@@ -62,7 +79,7 @@ export function CodePreview({ code, isLoading }: { code: string; isLoading: bool
 
   return (
     <div className={wrapperClass}>
-      <Tabs defaultValue={files[0].name} className="h-full flex flex-col">
+      <Tabs defaultValue={files[0].name} className="h-full flex flex-col" onValueChange={handleTabChange}>
         <TabsList className="bg-transparent p-0">
           {files.map((file) => (
             <TabsTrigger key={file.name} value={file.name} className="data-[state=active]:bg-primary/10 data-[state=active]:text-primary">{file.name}</TabsTrigger>

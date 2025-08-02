@@ -2,6 +2,9 @@
 
 import { z } from 'zod';
 import { appBlueprint, type AppBlueprintInput } from '@/ai/flows/app-blueprint';
+import { explainCode, type ExplainCodeOutput } from '@/ai/flows/explain-code';
+import { generateTests, type GenerateTestsOutput } from '@/ai/flows/generate-tests';
+import { refactorCode, type RefactorCodeOutput } from '@/ai/flows/refactor-code';
 
 const generateAppSchema = z.object({
   prompt: z.string().min(10, "Prompt must be at least 10 characters long."),
@@ -52,4 +55,43 @@ export async function generateApp(
       error: true,
     };
   }
+}
+
+const ExplainCodeInputSchema = z.object({
+  code: z.string().describe('The code snippet to explain.'),
+  language: z.string().describe('The programming language of the code.'),
+});
+
+export async function explainCodeAction(code: string, language: string): Promise<ExplainCodeOutput> {
+  const validatedFields = ExplainCodeInputSchema.safeParse({ code, language });
+  if (!validatedFields.success) {
+    throw new Error('Invalid input for explainCodeAction');
+  }
+  return await explainCode(validatedFields.data);
+}
+
+const GenerateTestsInputSchema = z.object({
+  code: z.string().describe('The code snippet to generate tests for.'),
+  language: z.string().describe('The programming language of the code.'),
+});
+
+export async function generateTestsAction(code: string, language: string): Promise<GenerateTestsOutput> {
+  const validatedFields = GenerateTestsInputSchema.safeParse({ code, language });
+  if (!validatedFields.success) {
+    throw new Error('Invalid input for generateTestsAction');
+  }
+  return await generateTests(validatedFields.data);
+}
+
+const RefactorCodeInputSchema = z.object({
+  code: z.string().describe('The code snippet to refactor.'),
+  language: z.string().describe('The programming language of the code.'),
+});
+
+export async function refactorCodeAction(code: string, language: string): Promise<RefactorCodeOutput> {
+  const validatedFields = RefactorCodeInputSchema.safeParse({ code, language });
+  if (!validatedFields.success) {
+    throw new Error('Invalid input for refactorCodeAction');
+  }
+  return await refactorCode(validatedFields.data);
 }

@@ -4,12 +4,13 @@ import { useState } from 'react';
 import { Header } from '@/components/app/header';
 import { PromptForm } from '@/components/app/prompt-form';
 import { CodePreview } from '@/components/app/code-preview';
-import { LivePreview } from '@/components/app/live-preview';
+import { AiFeatures } from '@/components/app/ai-features';
 import { ExportPanel } from '@/components/app/export-panel';
 
 export default function Home() {
   const [generatedCode, setGeneratedCode] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<{ name: string, content: string, language: string } | null>(null);
 
   const handleSuccess = (code: string) => {
     setGeneratedCode(code);
@@ -32,12 +33,16 @@ export default function Home() {
 
         {/* Middle Column */}
         <div className="lg:col-span-5 h-full min-h-[400px] lg:min-h-0">
-          <CodePreview code={generatedCode} isLoading={isLoading} />
+          <CodePreview 
+            code={generatedCode} 
+            isLoading={isLoading} 
+            onFileSelect={setSelectedFile}
+          />
         </div>
 
         {/* Right Column */}
         <div className="lg:col-span-4 h-full min-h-[400px] lg:min-h-0">
-          <LivePreview code={generatedCode} isLoading={isLoading} />
+          <AiFeatures selectedFile={selectedFile} />
         </div>
       </div>
     </main>
